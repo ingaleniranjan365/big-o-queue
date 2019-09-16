@@ -1,6 +1,6 @@
 import os 
 # path = '/Users/niranjani/Downloads/finalDataSet4Sept2019/'
-path = '/Users/niranjani/code/Big-O/attempt-7/data'
+path = './data'
 
 # path = '/Users/niranjani/Downloads/sampleData'
 count = 0

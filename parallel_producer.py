@@ -7,7 +7,7 @@ import multiprocessing as mp
 from joblib import Parallel, delayed
 
 # BASE_PATH = '/Users/niranjani/Downloads/sampleData/'   
-BASE_PATH = '/Users/niranjani/Downloads/finalDataSet4Sept2019/'   
+BASE_PATH = '../sampleData'   
 SERVER_ADDRESS = 'localhost'
 
 SERVER_PORT_FOR_FILE_CONTENTS_1 = 12345

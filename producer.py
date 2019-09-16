@@ -6,7 +6,7 @@ from sendfile import sendfile
     
 BASE_PATH = '/Users/niranjani/Downloads/sampleData/'   
 # BASE_PATH = '/Users/niranjani/Downloads/finalDataSet4Sept2019/'   
-SERVER_ADDRESS = 'localhost'
+SERVER_ADDRESS = '172.31.7.8'
 SERVER_PORT_FOR_FILE_CONTENTS = 12345
 SERVER_PORT_FOR_FILE_NAMES = 12346
 SERVER_CONNECTION_LIMIT = 1

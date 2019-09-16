@@ -120,7 +120,7 @@ if __name__ == "__main__":
     start_time = time.time()    
     
     # consume()
-    # Parallel(n_jobs=2)(delayed(consume)() for _ in range(25))
-    Parallel(n_jobs=2)(delayed(consume)() for _ in range(800))
+    Parallel(n_jobs=2)(delayed(consume)() for _ in range(25))
+    # Parallel(n_jobs=2)(delayed(consume)() for _ in range(800))
 
     print("--- %s seconds ---" % (time.time() - start_time))

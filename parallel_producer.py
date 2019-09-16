@@ -8,7 +8,7 @@ from joblib import Parallel, delayed
 
 # BASE_PATH = '/Users/niranjani/Downloads/sampleData/'   
 BASE_PATH = '../sampleData'   
-SERVER_ADDRESS = 'localhost'
+SERVER_ADDRESS = '172.31.7.8'
 
 SERVER_PORT_FOR_FILE_CONTENTS_1 = 12345
 SERVER_PORT_FOR_FILE_NAMES_1 = 12346

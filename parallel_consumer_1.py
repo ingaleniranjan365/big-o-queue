@@ -4,10 +4,10 @@ import time
 import queue
 from joblib import Parallel, delayed
 
-SERVER_ADDRESS = 'localhost'
+SERVER_ADDRESS = '172.31.7.8'
 SERVER_PORT_FOR_FILE_CONTENTS = 12345
 SERVER_PORT_FOR_FILE_NAMES = 12346
-BASE_PATH = '/Users/niranjani/code/Big-O/attempt-7/data/'
+BASE_PATH = './data/'
 CHUNK_SIZE_FOR_FILE_NAMES = 1024
 CHUNK_SIZE_FOR_FILE_CONTENTS = 32768
 

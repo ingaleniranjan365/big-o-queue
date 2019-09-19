@@ -11,8 +11,8 @@ import configuration
 
 CONF = configuration.conf
 
-if not os.path.exists(['common']['BASE_PATH']):
-    os.makedirs(['common']['BASE_PATH'])
+if not os.path.exists(CONF['common']['BASE_PATH']):
+    os.makedirs(CONF['common']['BASE_PATH'])
 
 def send_data(q, server_socket_for_file_contents, server_socket_for_file_names, base_path):
     client_socket_for_file_contents, addr = server_socket_for_file_contents.accept()

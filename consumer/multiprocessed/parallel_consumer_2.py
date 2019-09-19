@@ -9,7 +9,7 @@ import configuration
 
 CONF = configuration.conf
 
-if not os.path.exists(['common']['BASE_PATH']):
+if not os.path.exists(CONF['common']['BASE_PATH']):
     os.makedirs(['common']['BASE_PATH'])
 
 def connect(server_address, server_port):

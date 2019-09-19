@@ -3,7 +3,7 @@ conf = {
         'SERVER_ADDRESS' : '172.31.7.8',
         'CHUNK_SIZE_FOR_FILE_NAMES': 1024,
         'CHUNK_SIZE_FOR_FILE_CONTENTS': 32768,
-        'BASE_PATH': '/home/ubuntu/ephemeral/finalDataSet4Sept2019',
+        'BASE_PATH': '/home/ubuntu/ephemeral/finalDataSet4Sept2019/',
         'PROCESS_POOL_SIZE': 800,
         'MAX_NUMBER_OF_PROCESSES_EXECUTING_AT_A_TIME': 2
     },

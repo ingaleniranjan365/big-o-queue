@@ -1,8 +1,6 @@
 import os 
-# path = '/Users/niranjani/Downloads/finalDataSet4Sept2019/'
-path = './data'
+path = '/home/ubuntu/ephemeral/finalDataSet4Sept2019'
 
-# path = '/Users/niranjani/Downloads/sampleData'
 count = 0
 # max_file_size = 0
 

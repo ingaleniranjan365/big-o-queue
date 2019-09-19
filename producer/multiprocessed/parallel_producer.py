@@ -80,7 +80,7 @@ if __name__ == "__main__":
     for i in range(2):
         mp.Process(target=produce, kwargs=dict(
                 payload=payloads[i],
-                server_address=CONF['common']['SERVER_PORT_FOR_FILE_CONTENTS']['SERVER_ADDRESS'],
+                server_address=CONF['common']['SERVER_ADDRESS'],
                 server_port_for_file_names=ports[i]['for_file_names'],
                 server_port_for_file_contents=ports[i]['for_file_contents'],
                 server_connection_limit=CONF['producer']['SERVER_CONNECTION_LIMIT'],

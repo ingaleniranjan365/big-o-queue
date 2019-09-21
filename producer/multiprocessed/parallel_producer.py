@@ -77,7 +77,7 @@ if __name__ == "__main__":
 
     # Parallel(n_jobs=2)(delayed(produce)(payloads[i], SERVER_ADDRESS, ports[i]['for_file_names'], ports[i]['for_file_contents'], SERVER_CONNECTION_LIMIT, BASE_PATH) for i in range(2))
 
-    for i in range(2):
+    for i in range(CONF['producer']['COUNT_OF_PRODUCERS']):
         mp.Process(target=produce, kwargs=dict(
                 payload=payloads[i],
                 server_address=CONF['common']['SERVER_ADDRESS'],

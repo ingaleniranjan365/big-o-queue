@@ -20,10 +20,10 @@ def send_data(q, server_socket_for_file_contents, server_socket_for_file_names, 
     print("accepted connection from client")
     while not q.empty():
         filename = q.get()              
-        client_socket_for_file_names.send(filename.encode('utf-8'))
+        client_socket_for_file_names.sendall(filename.encode('utf-8'))
         with open(base_path+filename, 'rb') as f:      
             client_socket_for_file_contents.sendfile(f, 0)   
-    
+            client_socket_for_file_contents.sendall(b'~!@#$%^&*()_+')
     client_socket_for_file_contents.close()    
     client_socket_for_file_names.close()
      

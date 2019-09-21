@@ -82,7 +82,7 @@ def write_to_disk(file_names, file_contents, base_path, data_contains_split_key)
                 del file_contents[idx]
                 if(file_content.count(file_name)==1):
                     file_name_str = file_name.decode('utf-8') + '.json'   
-                    write(file_name_str, file_contents[idx], base_path)
+                    write(file_name_str, file_content, base_path)
                     break
     else:
         # big leap of faith! Assumption : TCP works

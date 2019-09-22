@@ -1,0 +1,81 @@
+import socket
+import os
+import time
+import queue
+from joblib import Parallel, delayed
+import asyncio
+from typing import IO
+import aiofiles
+import sys
+sys.path.append("../../")
+import configuration
+CONF = configuration.conf
+  
+if not os.path.exists(CONF['common']['BASE_PATH']):
+    os.makedirs(CONF['common']['BASE_PATH'])
+
+def connect(server_address, server_port):
+    sock = socket.socket()
+    connected = False
+    while not connected:
+        try:
+            sock = socket.socket()
+            sock.connect((server_address, server_port))
+            connected = True
+        except:
+            pass
+    return sock
+
+def read(sock):
+    chunk = b''
+    try:
+        chunk = sock.recv(CONF['common']['CHUNK_SIZE'])
+    except:
+        chunk = b''
+    return chunk
+
+def read_from_socket(server_address, server_port):
+    sock = connect(server_address, server_port)
+    all_chunks = b''
+    while True:
+        chunk = read(sock)
+        # TODO: Use better condition, this might screw you 
+        if(not chunk):
+            # TODO: talk to producer to confirm that all data has been sent
+            break
+        all_chunks+=chunk
+    sock.close()
+    return all_chunks
+
+def process_before_writing(all_chunks):
+    # TODO: you can do more validations ove data here
+    return all_chunks.split(b'~@$^*)+')[:-1]
+
+async def write(file_path, file_content) -> None :
+    async with aiofiles.open(file_path, "wb") as f:
+        await f.write(file_content)
+
+async def write_to_disk(messages, base_path) -> None :
+    tasks = []
+    for message in messages:
+        file_name_and_content = message.split(b'!#%&(_')
+        file_name = file_name_and_content[0]
+        file_content = file_name_and_content[1]
+        tasks.append(
+            write(base_path+file_name, file_content)
+        )
+    await asyncio.gather(*tasks)
+
+def consume():
+    all_chunks = read_from_socket(CONF['common']['SERVER_ADDRESS'], CONF['consumer_1']['SERVER_PORT'])
+    messages = process_before_writing(all_chunks)
+    loop = asyncio.new_event_loop()
+    loop.run_until_complete(write_to_disk(messages = messages, base_path=CONF['common']['BASE_PATH']))
+    loop.close()
+
+if __name__ == "__main__":
+    start_time = time.time()
+
+    Parallel(n_jobs=CONF['common']['MAX_NUMBER_OF_PROCESSES_EXECUTING_AT_A_TIME'])(delayed(consume)() for _ in range(CONF['common']['PROCESS_POOL_SIZE']))
+
+    print("--- %s seconds ---" % (time.time() - start_time))

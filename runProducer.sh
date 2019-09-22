@@ -1,0 +1,1 @@
+cd /home/ubuntu/big-o-queue/producer/ && python3 producer.py

@@ -1,0 +1,1 @@
+cd /home/ubuntu/big-o-queue/consumer/ && python3 consumer.py -c $1

@@ -57,6 +57,7 @@ def write(file_path, file_content):
     f = open(file_path, 'wb')
     f.write(file_content)
 
+
 def write_to_disk(messages, base_path):
     for message in messages:
         file_name_and_content = message.split(b'!#%&(_')
@@ -85,11 +86,12 @@ def read_this_batch(server_address, server_port, chunk_size):
                     all_data_in_this_batch += data
             done = True
         except Exception as e:
-            print(e)
+            pass
+            #print(e)
     return all_data_in_this_batch
 
 
-def consume(consumer_id, i):
+def consume(consumer_id, sharedQueue, i):
     #start_time = time.time()
 
     consumer = {'1': 'consumer_1', '2': 'consumer_2'}
@@ -120,7 +122,8 @@ def consume(consumer_id, i):
     for _ in range(1):
         all_data_in_this_batch = read_this_batch(CONF['common']['SERVER_ADDRESS'], CONF[consumer[consumer_id]]['SERVER_PORT'], CONF['common']['CHUNK_SIZE'])
         messages = process_before_writing(all_data_in_this_batch)
-        write_to_disk(messages, CONF['common']['BASE_PATH'])
+        sharedQueue.put(messages)
+        #write_to_disk(messages, CONF['common']['BASE_PATH'])
 
 
     #with socket.socket(socket.AF_INET, socket.SOCK_STREAM) as sock:
@@ -146,6 +149,20 @@ def consume(consumer_id, i):
 
     #print("--- %s seconds ---" % (time.time() - start_time))
 
+def write_to_disk_parallel(sharedQueue):
+    fileWriteCount = 0
+    while True:
+        if not sharedQueue.empty():
+            messages = sharedQueue.get()
+            # write messages to disk
+            print(messages)
+            print("Written messages to disk")
+            fileWriteCount+=2500
+        if fileWriteCount==2000000:
+            break
+        else:            
+            continue
+
 if __name__ == "__main__":
     start_time = time.time()
 
@@ -153,53 +170,25 @@ if __name__ == "__main__":
     parser.add_argument("-c", "--consumer", type=str, default="1")
     args = parser.parse_args()
 
+    
     #start_time = time.time()
-    #Parallel(n_jobs=CONF['common']['MAX_NUMBER_OF_PROCESSES_EXECUTING_AT_A_TIME'])(delayed(consume)(args.consumer, i) for i in range(CONF['common']['PROCESS_POOL_SIZE']))
-    Parallel(n_jobs=CONF['common']['MAX_NUMBER_OF_PROCESSES_EXECUTING_AT_A_TIME']*2)(delayed(consume)(args.consumer, i) for i in range(CONF['common']['PROCESS_POOL_SIZE']))
+    sharedQueue = mp.Queue()
+    mp.Process(target=write_to_disk_parallel, kwargs=dict(
+        sharedQueue=sharedQueue
+    )).start()
+
+    Parallel(n_jobs=CONF['common']['MAX_NUMBER_OF_PROCESSES_EXECUTING_AT_A_TIME']//2)(delayed(consume)(args.consumer, sharedQueue, i) for i in range(CONF['common']['PROCESS_POOL_SIZE']))
+    #Parallel(n_jobs=CONF['common']['MAX_NUMBER_OF_PROCESSES_EXECUTING_AT_A_TIME']*2)(delayed(consume)(args.consumer, i) for i in range(CONF['common']['PROCESS_POOL_SIZE']))
 
     '''
     for i in range(2):
         mp.Process(target=consume, kwargs=dict(
                 consumer_id=args.consumer,
-                i=i
+                i=i,
+                start_time=start_time
             )).start()
     '''
+
+    #consume(args.consumer, 1)
 
     print("--- %s seconds ---" % (time.time() - start_time))    #print('Received', repr(data))
-
-
-    #i = str(i) + '/'
-    #i = i.encode('utf-8')
-    #if not os.path.exists(CONF['common']['BASE_PATH']+i):
-    #    os.makedirs(CONF['common']['BASE_PATH']+i)
-
-    #cmd = 'mv ' + CONF['common']['BASE_PATH'].decode('utf-8') + i.decode('utf-8') + '*' + ' ' + '/home/ubuntu/ephemeral/data/'
-    #for _ in range(400):
-        #all_chunks = read_from_socket(CONF['common']['SERVER_ADDRESS'], CONF[consumer[consumer_id]]['SERVER_PORT'])
-        #messages = process_before_writing(all_chunks)
-        #write_to_disk(messages = messages, base_path=CONF['common']['BASE_PATH'])
-        #os.system(cmd)
-        #logging.info("Completed writting {0} messages at {1}".format(len(messages), int(round(time.time() * 1000))))
-
-    #print("--- %s seconds ---" % (time.time() - start_time))
-
-if __name__ == "__main__":
-    start_time = time.time()
-
-    parser = argparse.ArgumentParser()
-    parser.add_argument("-c", "--consumer", type=str, default="1")
-    args = parser.parse_args()
-
-    #start_time = time.time()
-    #Parallel(n_jobs=CONF['common']['MAX_NUMBER_OF_PROCESSES_EXECUTING_AT_A_TIME'])(delayed(consume)(args.consumer, i) for i in range(CONF['common']['PROCESS_POOL_SIZE']))
-    Parallel(n_jobs=CONF['common']['MAX_NUMBER_OF_PROCESSES_EXECUTING_AT_A_TIME']*2)(delayed(consume)(args.consumer, i) for i in range(CONF['common']['PROCESS_POOL_SIZE']))
-
-    '''
-    for i in range(2):
-        mp.Process(target=consume, kwargs=dict(
-                consumer_id=args.consumer,
-                i=i
-            )).start()
-    '''
-
-    print("--- %s seconds ---" % (time.time() - start_time))

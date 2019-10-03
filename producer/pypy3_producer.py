@@ -23,9 +23,7 @@ if not os.path.exists(CONF['common']['BASE_PATH']):
 
 
 def send_data_stub(q, server_socket, base_path):
-    print('Inside send_data')
     client_socket, addr = server_socket.accept()
-    print('accepted connection from client')
     with client_socket:
         queue_size = q.qsize()
         while not q.empty():
@@ -38,12 +36,10 @@ def send_data_stub(q, server_socket, base_path):
         client_socket.close()
     logging.info("Completed sending {0} messages on {1}".format(queue_size, int(round(time.time() * 1000))))
 
+
 def produce(payload, server_address, server_port, server_connection_limit, base_path):
     start_time = time.time()
 
-    #server_socket = socket.socket()
-    #server_socket.bind((server_address, server_port))
-    #server_socket.listen(server_connection_limit)
 
     with socket.socket(socket.AF_INET, socket.SOCK_STREAM) as server_socket:
         server_socket.bind((server_address, server_port))
@@ -69,14 +65,7 @@ def produce(payload, server_address, server_port, server_connection_limit, base_
                         client_socket.sendall(b'~@$^*)+')
                 client_socket.close()
 
-
-    #for q in payload:
-    #    send_data(q, server_socket, base_path)
-
-    #server_socket.close()
-
     print("--- %s seconds ---" % (time.time() - start_time))
-
 
 def get_payloads():
     total_payload = []
